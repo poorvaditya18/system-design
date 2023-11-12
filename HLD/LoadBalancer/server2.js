@@ -5,7 +5,7 @@ const ApiRoutes = require("./routes/index.js");
 
 const router = express.Router();
 
-let PORT = 3001;
+const PORT = 3001;
 
 const server_setup = async () => {
   const app = express();
