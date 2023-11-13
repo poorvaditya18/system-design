@@ -6,6 +6,8 @@ Key points for reference
 1. Load Balancer can be implemented as a separate server which will route traffic. 
 2. Load Balancer can be implemented as a socket server connection also . 
 """
+
+# load balancer implementation in python using socket and threading 
 import threading
 import socket
 import requests
@@ -21,6 +23,7 @@ class LoadBalancer:
         self.algorithm = algorithm  
         self.servers = {}  # Dictionary to store registered servers [shared Resource]
         self.server_lock= threading.Lock()
+        self.round_robin_index = 0 # for round robin algorithm
         self.start_load_balancer()
 
     def start_load_balancer(self):
@@ -94,24 +97,23 @@ class LoadBalancer:
             # register server 
             self.register_server(server_ip,server_port,isAlive)
         else:
-            print("Sending Data to server ....")
+            print("Choosing appropriate server...")
             # Choose a server based on the load balancing algorithm
-            # server = self.choose_server(self.algorithm)
-            # # Send the request to the selected server
-            # if server:
-            #     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            #     server_socket.connect(server)
-            #     # send request to the selected server
-            #     server_socket.send(json_data.encode('utf-8'))
-            #     # get the response back
-            #     response = server_socket.recv(1024).decode('utf-8')
+            server = self.choose_server(self.algorithm)
+            # Send the request to the selected server
+            print(f"Server assigned: {server}")
+            if server:
+                # suppose there is a signup request from the client side
+                # Modify the URL based on the server IP and port
+                server_url = f"http://{server}/signup"
 
-            #     print(f"Received response from server: {response}")
-            #     # Forward the response back to the client
-            #     client_socket.send(response.encode('utf-8'))
-            #     # Close the connections
-            #     server_socket.close()
-            #     client_socket.close()
+                # Send the request to the server
+                headers = {'Content-Type': 'application/json'}
+                response = requests.post(server_url, data=json_payload,headers=headers)
+                print(f"Received response from server: {response.text}")
+                # Forward the response back to the client
+                client_socket.send(response.text.encode('utf-8'))
+
 
     def heartbeat_monitoring(self):
         # PULL ---> heartbeat monitoring
@@ -155,8 +157,8 @@ class LoadBalancer:
     # choosing server 
     def choose_server(self,algorithm)->str:
         # implement load balancing algorithm 
-        # return server which is registered as well as alive 
-        pass
+        if(algorithm == "RoundRobin"):
+            return self.round_robin()
     
     # register server 
     def register_server(self, server_ip, server_port,isAlive):
@@ -195,6 +197,19 @@ class LoadBalancer:
         except Exception as e:
             print(f"Error occured while parsing request : " + str(e))
         return rStatus
+
+    # round_robin 
+    def round_robin(self)->str:
+        with self.server_lock:
+            servers = list(self.servers.keys())
+            if not servers:
+                return None
+            # Round Robin selection
+            selected_server = servers[self.round_robin_index]
+            # to keep index in bound or rotate the index
+            self.round_robin_index = (self.round_robin_index + 1) % len(servers)
+            return selected_server
+        
 
 # start load balancer at port : 5000
 loadbalancer = LoadBalancer("localhost",5001,"RoundRobin")
