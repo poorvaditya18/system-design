@@ -2,6 +2,10 @@
 Builder Pattern - 
     - is creational pattern that separates the construction of a complex object from its representation.
     - The Builder pattern provides a step-by-step approach to create an object, allowing  to construct different types and representations of the object without changing the construction logic. 
+    - Benefits : 
+        - Flexibility: Different types of orders (e.g., standard, express) can be built using the same builder process but with different configurations.
+        - Readability: The order-building process is easy to read and maintain with method chaining, as opposed to a large constructor with many parameters.
+        - Extendability: Adding new order components (e.g., new shipping methods, payment methods) only requires adding new methods in the builder without changing the core construction logic.
 """
 
 # consider an example of ecommerce application where you have a order which should have properties and items , shipping method, payment_method, discount.
@@ -37,6 +41,7 @@ class OrderBuilder:
         return self
     
     def build(self):
+        # this builder method will return object
         return self.order
 
 
