@@ -1,11 +1,19 @@
 """
-Factory method - lies under creational design patterns. 
-               - Instead of the client code directly creating objects, it delegates the responsibility to a Factory Method.
-               - The Factory Design Pattern is a creational design pattern used to create objects without specifying the exact class of the object that will be created.
-               - Benefits : 
-                   - Encapsulation: The client code is decoupled from the specific classes needed to instantiate the logger. The factory handles this.
-                   - You can add new types of Payment without modifying the client code.
-                   - This pattern is useful in larger systems where object creation logic becomes more complex.
+Factory method 
+
+Characteristics:
+    - lies under creational design patterns. 
+    - Instead of the client code directly creating objects, it delegates the responsibility to a Factory Method.
+    - The Factory Design Pattern is a creational design pattern used to create objects without specifying the exact class of the object that will be created.
+
+Benefits : 
+    - Encapsulation: The client code is decoupled from the specific classes needed to instantiate the logger. The factory handles this.
+    - You can add new types of Payment without modifying the client code.
+    - This pattern is useful in larger systems where object creation logic becomes more complex.
+
+Applications :
+    - Library Frameworks: It’s commonly used in library frameworks, allowing developers to extend and customize the behavior of a library.
+    - Plug-in Architectures: When building applications with extensible plug-in architectures, the Factory Method pattern simplifies the addition of new plug-ins without modifying existing code.
 """
 from abc import abstractmethod
 
